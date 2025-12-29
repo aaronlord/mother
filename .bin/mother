@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+set -e
+
+# --------------------------------------------------
+# Configuration
+# --------------------------------------------------
+SUPPORTED_VERSIONS=("8.3" "8.4" "8.5")
+
+# --------------------------------------------------
+# Parse Mother flags (must come first)
+# --------------------------------------------------
+PHP_VERSION=""
+
+while [[ "$1" == --* ]]; do
+  case "$1" in
+    --php=*)
+      PHP_VERSION="${1#--php=}"
+      shift
+      ;;
+    *)
+      echo "mother: unknown option '$1'" >&2
+      exit 1
+      ;;
+  esac
+done
+
+# --------------------------------------------------
+# Command required
+# --------------------------------------------------
+if [ $# -eq 0 ]; then
+  echo "usage: mother [--php=X.Y] <command> [args...]" >&2
+  exit 1
+fi
+
+COMMAND="$1"
+shift || true
+
+# --------------------------------------------------
+# Resolve services
+# --------------------------------------------------
+SERVICES=()
+
+if [ -n "$PHP_VERSION" ]; then
+  FOUND=0
+
+  for v in "${SUPPORTED_VERSIONS[@]}"; do
+    if [ "$v" = "$PHP_VERSION" ]; then
+      SERVICES=("php${v/./}")
+      FOUND=1
+      break
+    fi
+  done
+
+  if [ "$FOUND" -eq 0 ]; then
+    echo "mother: unsupported PHP version '$PHP_VERSION'" >&2
+    echo "supported versions:" >&2
+    for v in "${SUPPORTED_VERSIONS[@]}"; do
+      echo "  $v" >&2
+    done
+    exit 1
+  fi
+else
+  for v in "${SUPPORTED_VERSIONS[@]}"; do
+    SERVICES+=("php${v/./}")
+  done
+fi
+
+# --------------------------------------------------
+# Runner
+# --------------------------------------------------
+
+run() {
+  local service="$1"
+  shift
+
+  docker compose run --rm "$service" "$@"
+}
+
+# --------------------------------------------------
+# Command routing
+# --------------------------------------------------
+if [ "$COMMAND" = "composer" ]; then
+    run "${SERVICES[0]}" composer "$@"
+else
+    for service in "${SERVICES[@]}"; do
+      # if more than one service, print a header
+      if [ "${#SERVICES[@]}" -gt 1 ]; then
+        run "$service" php -v
+      fi
+
+      case "$COMMAND" in
+        example)
+          run "$service" php example/index.php
+          ;;
+        pest)
+          run "$service" vendor/bin/pest "$@"
+          ;;
+        phpstan)
+          run "$service" vendor/bin/phpstan --memory-limit=1G analyse "$@"
+          ;;
+        pint)
+          run "$service" vendor/bin/pint "$@"
+          ;;
+        test)
+          run "$service" vendor/bin/pint --test
+          run "$service" vendor/bin/phpstan --memory-limit=1G analyse
+          run "$service" vendor/bin/pest --type-coverage --min=100
+          run "$service" vendor/bin/pest --coverage --min=100
+          ;;
+        shell|bash)
+          run "$service" bash
+          ;;
+        *)
+          run "$service" "$COMMAND" "$@"
+          ;;
+      esac
+    done
+fi

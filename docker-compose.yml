@@ -1,0 +1,14 @@
+services:
+  php83: &defaults
+    build: .docker/php83
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  php84:
+    <<: *defaults
+    build: .docker/php84
+
+  php85:
+    <<: *defaults
+    build: .docker/php85
