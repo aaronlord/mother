@@ -9,7 +9,7 @@ to return realistic data to the frontend before features are fully implemented.
 The design is inspired by the Object Mother pattern, with a focus on:
 
 - type-aware generation
-- jsensible defaults
+- sensible defaults
 - deep object graphs
 - minimal configuration
 
