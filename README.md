@@ -21,53 +21,29 @@ composer require lord/mother --dev
 
 ### Basic usage
 
-Generate a fully populated object:
-
 ```php
 <?php
 
 use Lord\Mother\Mother;
 
+# Generate an instance of UserData:
 $user = Mother::make(UserData::class);
-```
 
-Override specific properties:
-
-```php
-<?php
-
+# Generate with specific properties overridden:
 $user = Mother::make(UserData::class, [
     'name' => 'Jane Doe',
     'address.city' => 'London',
 ]);
+
+
+# Generate multiple instances with the builder:
+$users = Mother::for(UserData::class)
+    ->with([
+        'status' => 'active',
+    ])
+    ->populateNulls()
+    ->make(10);
 ```
-Generate multiple instances:
-
-```php
-<?php
-
-$users = Mother::for(UserData::class)->make(10);
-```
-
-### Nested objects
-
-Mother will automatically generate nested objects when it encounters class-typed properties:
-
-```php
-<?php
-
-class PersonData {
-    public function __construct(
-        public string $name,
-        public AddressData $address,
-    ) {}
-}
-
-$person = Mother::make(PersonData::class);
-```
-
-Overrides may be provided as nested arrays or dot-notation keys.
-
 ### Custom generators
 
 You can register your own value generators:
@@ -91,12 +67,35 @@ class ExampleData {
 }
 ```
 
+Or apply a generator to an entire class:
+
+```php
+<?php
+
+use Lord\Mother\Attributes\MotherUsing;
+
+#[MotherUsing(new ExampleGenerator())]
+class ExampleData {
+    public string $value;
+}
+```
+
 ### Options
 
 Generation behaviour can be customised:
 
 ```php
 <?php
+
+Mother::make(
+    UserData::class,
+    [],
+    new Options(
+        maxDepth: 2,
+    )
+);
+
+// Or using an array:
 
 Mother::make(
     UserData::class,
@@ -109,17 +108,17 @@ Mother::make(
 );
 ```
 
-Dependency injection
+### Dependency injection
 
-Mother uses a container internally but allows consumers to provide their own:
+If you want to change how Mother works, you can provide your own container and
+with your own classes registered. See `src/Contracts` for the interfaces that can be
+implemented.
 
 ```php
 <?php
 
 Mother::resolveContainerUsing(fn () => $container);
 ```
-
-This makes it easy to integrate with existing frameworks.
 
 ## Testing
 
