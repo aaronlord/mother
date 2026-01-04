@@ -120,3 +120,19 @@ Mother::resolveContainerUsing(fn () => $container);
 ```
 
 This makes it easy to integrate with existing frameworks.
+
+## Testing
+
+A shell command `/bin/mother` is provided to aid with development. Here are some
+examples of how to use it:
+
+```sh
+# Run the entire test suite
+mother test
+
+# Just run static analysis
+mother phpstan
+
+# Run a specific test, on a specific PHP version
+mother --php=8.3 pest tests/Feature/MotherTest.php
+```
