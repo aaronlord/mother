@@ -45,7 +45,7 @@ $users = Mother::for(UserData::class)
     ->make(10);
 ```
 
-See the [examples directory](examples) for a more detailed demonstration of usage.
+See the [example dir](example) for a more detailed demonstration of usage.
 
 ### Custom generators
 
