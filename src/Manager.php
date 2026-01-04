@@ -24,9 +24,13 @@ class Manager implements ManagerInterface
     public function make(
         string $class,
         array $overrides = [],
-        array $options = [],
+        Options|array $options = [],
     ): object {
-        $builder = $this->builderFactory->make($class, Options::from($options));
+        if (is_array($options)) {
+            $options = Options::from($options);
+        }
+
+        $builder = $this->builderFactory->make($class, $options);
 
         foreach ($overrides as $prop => $value) {
             $builder = $builder->with($prop, $value);

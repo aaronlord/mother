@@ -10,6 +10,7 @@ use Lord\Mother\Contracts\ManagerInterface;
 use Lord\Mother\Contracts\ValueGeneratorInterface;
 use Lord\Mother\Generator\ValueGeneratorRegistry;
 use Lord\Mother\Support\Container;
+use Lord\Mother\Support\Options;
 use Psr\Container\ContainerInterface;
 
 class Mother
@@ -27,13 +28,13 @@ class Mother
      * @template T of object
      * @param class-string<T> $class
      * @param array<string, mixed> $overrides
-     * @param array<string, mixed> $options
+     * @param Options|array<string, mixed> $options
      * @return T
      */
     public static function make(
         string $class,
         array $overrides = [],
-        array $options = [],
+        Options|array $options = [],
     ): object {
         $manager = self::resolve(ManagerInterface::class);
 
