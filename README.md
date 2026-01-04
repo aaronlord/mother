@@ -44,9 +44,13 @@ $users = Mother::for(UserData::class)
     ->populateNulls()
     ->make(10);
 ```
+
+See the [examples directory](examples) for a more detailed demonstration of usage.
+
 ### Custom generators
 
-You can register your own value generators:
+You can register your own value generators, and let them decide which values
+they support.
 
 ```php
 <?php
@@ -54,7 +58,7 @@ You can register your own value generators:
 Mother::register(new CustomStringGenerator());
 ```
 
-Or apply them at a property or parameter level using attributes:
+Or directly apply them at a property or parameter level using attributes:
 
 ```php
 <?php
