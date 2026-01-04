@@ -24,7 +24,6 @@ class Builder implements BuilderInterface
 
     /**
      * @param class-string<T> $class
-     * @param GeneratorInterface<T> $generator
      */
     public function __construct(
         protected readonly string $class,

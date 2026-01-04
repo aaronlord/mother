@@ -15,16 +15,9 @@ use Lord\Mother\Support\Options;
 
 /**
  * @template T of object
- *
- * @implements GeneratorInterface<T>
  */
 final class Generator implements GeneratorInterface
 {
-    /**
-     * @param PropertyResolverInterface<T> $resolver
-     * @param ObjectInstantiatorInterface<T> $instantiator
-     * @param ValueGeneratorRegistryInterface $registry
-     */
     public function __construct(
         protected readonly PropertyResolverInterface $resolver,
         protected readonly ObjectInstantiatorInterface $instantiator,
@@ -33,8 +26,7 @@ final class Generator implements GeneratorInterface
     }
 
     /**
-     * @param array<int|string, mixed> $overrides
-     *
+     * @param class-string<T> $class
      * @return T|null
      */
     public function generate(string $class, array $overrides, Options $options): ?object

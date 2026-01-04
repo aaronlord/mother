@@ -11,11 +11,6 @@ use ReflectionParameter;
 use ReflectionProperty;
 use RuntimeException;
 
-/**
- * @template T of object
- *
- * @implements ObjectInstantiatorInterface<T>
- */
 class ObjectInstantiator implements ObjectInstantiatorInterface
 {
     public function create(string $class, array $args): object
@@ -34,6 +29,7 @@ class ObjectInstantiator implements ObjectInstantiatorInterface
     }
 
     /**
+     * @template T of object
      * @param ReflectionClass<T> $reflection
      * @param array<string, mixed> $args
      * @return T
@@ -49,6 +45,7 @@ class ObjectInstantiator implements ObjectInstantiatorInterface
     }
 
     /**
+     * @template T of object
      * @param ReflectionClass<T> $reflection
      * @param array<string, mixed> $args
      * @return T
@@ -100,6 +97,7 @@ class ObjectInstantiator implements ObjectInstantiatorInterface
     }
 
     /**
+     * @template T of object
      * @param ReflectionClass<T> $reflection
      * @param object $instance
      * @param array<int|string, mixed> $data

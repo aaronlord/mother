@@ -6,6 +6,7 @@ namespace Lord\Mother\Tests\Unit\Generator\ValueGenerators;
 
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use InvalidArgumentException;
 use Lord\Mother\Generator\ValueGenerators\DateTimeGenerator;
 use Lord\Mother\Reflection\PropertyDefinition;
@@ -100,7 +101,7 @@ describe('generate', function () {
         expect(count($uniqueResults))->toBeGreaterThan(90);
     });
 
-    it('should generate dates from', function (mixed $from, mixed $to) {
+    it('should generate dates from', function (DateTimeInterface|int|string $from, DateTimeInterface|int|string $to) {
         $property = new PropertyDefinition(
             name: 'value',
             type: 'DateTime',
@@ -115,8 +116,11 @@ describe('generate', function () {
 
         $result = $sut->generate($property, $options);
 
-        $fromTimestamp = is_string($from) ? strtotime($from) : ($from instanceof \DateTimeInterface ? $from->getTimestamp() : $from);
-        $toTimestamp = is_string($to) ? strtotime($to) : ($to instanceof \DateTimeInterface ? $to->getTimestamp() : $to);
+        $fromTimestamp = is_string($from) ? strtotime($from) : ($from instanceof DateTimeInterface ? $from->getTimestamp() : $from);
+        $toTimestamp = is_string($to) ? strtotime($to) : ($to instanceof DateTimeInterface ? $to->getTimestamp() : $to);
+
+        assert(is_int($fromTimestamp));
+        assert(is_int($toTimestamp));
 
         expect($result->getTimestamp())->toBeGreaterThanOrEqual($fromTimestamp);
         expect($result->getTimestamp())->toBeLessThanOrEqual($toTimestamp);

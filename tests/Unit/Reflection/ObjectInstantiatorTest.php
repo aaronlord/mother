@@ -81,11 +81,8 @@ describe('create', function () {
 
         $sut = new ObjectInstantiator();
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Enums should be handled by EnumGenerator, not ObjectInstantiator');
-
         $sut->create(SampleEnum::class, []);
-    });
+    })->throws(RuntimeException::class, 'Enums should be handled by EnumGenerator, not ObjectInstantiator');
 
     it('does not set properties that do not exist in the class', function () {
         class ExtraPropertyStub

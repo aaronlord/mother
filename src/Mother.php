@@ -35,7 +35,6 @@ class Mother
         array $overrides = [],
         array $options = [],
     ): object {
-        /** @var ManagerInterface<T> */
         $manager = self::resolve(ManagerInterface::class);
 
         return $manager->make($class, $overrides, $options);
@@ -50,7 +49,6 @@ class Mother
      */
     public static function for(string $class): BuilderInterface
     {
-        /** @var ManagerInterface<T> */
         $manager = self::resolve(ManagerInterface::class);
 
         return $manager->for($class);

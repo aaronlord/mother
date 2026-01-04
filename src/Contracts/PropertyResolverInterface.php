@@ -6,14 +6,12 @@ namespace Lord\Mother\Contracts;
 
 use Lord\Mother\Reflection\PropertyDefinition;
 
-/**
- * @template T of object
- */
 interface PropertyResolverInterface
 {
     /**
      * Get property definitions for a class.
      *
+     * @template T of object
      * @param class-string<T> $class
      * @return list<PropertyDefinition>
      */
