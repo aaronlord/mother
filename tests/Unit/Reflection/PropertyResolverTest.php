@@ -70,7 +70,7 @@ describe('for', function () {
         {
             protected string $name;
 
-            private int $age;
+            private int $age; // @phpstan-ignore property.unused
         }
 
         $sut = new PropertyResolver();
@@ -113,7 +113,7 @@ describe('for', function () {
     it('handles non-typed properties', function () {
         class NonTypedResolverStub
         {
-            public function __construct(
+            public function __construct(// @phpstan-ignore missingType.parameter
                 public $data,
             ) {
             }
@@ -150,6 +150,6 @@ describe('for', function () {
     it('throws an exception for non-existent classes', function () {
         $sut = new PropertyResolver();
 
-        $sut->for('NonExistentClass');
+        $sut->for('NonExistentClass'); // @phpstan-ignore argument.type
     })->throws(RuntimeException::class, 'Class NonExistentClass does not exist.');
 });

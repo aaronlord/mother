@@ -24,7 +24,6 @@ describe('di', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         expect($builder)->toBeInstanceOf(BuilderInterface::class);
@@ -49,7 +48,6 @@ describe('with', function () {
 
         $optionMock = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $optionMock);
 
         $builder->with($property, 'value');
@@ -84,7 +82,6 @@ describe('with', function () {
 
         $optionMock = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $optionMock);
 
         $builder->with('property', 'initial value');
@@ -113,7 +110,6 @@ describe('with', function () {
 
         $optionMock = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $optionMock);
 
         $builder
@@ -147,7 +143,6 @@ describe('populateNulls', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         $builder->populateNulls();
@@ -175,7 +170,6 @@ describe('populateNulls', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         /** @var object{options: Options} $object */
@@ -201,7 +195,6 @@ describe('populateNulls', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         $builder
@@ -233,7 +226,6 @@ describe('make', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         $result = $builder->make(1);
@@ -258,7 +250,6 @@ describe('make', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         $result = $builder->make(3);
@@ -288,7 +279,6 @@ describe('generate', function () {
 
         $options = new Options();
 
-        /** @var GeneratorInterface<PersonData> $generatorMock */
         $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $options);
 
         $builder->make();

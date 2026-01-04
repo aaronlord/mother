@@ -6,12 +6,10 @@ namespace Lord\Mother\Contracts;
 
 use Lord\Mother\Support\Options;
 
-/**
- * @template T of object
- */
 interface GeneratorInterface
 {
     /**
+     * @template T of object
      * @param class-string<T> $class
      * @param array<int|string, mixed> $overrides
      * @param Options $options

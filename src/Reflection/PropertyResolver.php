@@ -15,8 +15,6 @@ use RuntimeException;
 
 /**
  * @template T of object
- *
- * @implements PropertyResolverInterface<T>
  */
 class PropertyResolver implements PropertyResolverInterface
 {
@@ -25,6 +23,9 @@ class PropertyResolver implements PropertyResolverInterface
      */
     protected array $cache = [];
 
+    /**
+     * @param class-string<T> $class
+     */
     public function for(string $class): array
     {
         if (isset($this->cache[$class])) {

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Lord\Mother\Contracts;
 
-/**
- * @template T of object
- */
 interface ObjectInstantiatorInterface
 {
     /**
+     * @template T of object
      * @param class-string<T> $class
      * @param array<string, mixed> $args
      * @return T

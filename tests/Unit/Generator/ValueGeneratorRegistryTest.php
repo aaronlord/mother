@@ -107,9 +107,6 @@ describe('generate', function () {
 
         $registry = new ValueGeneratorRegistry($generatorA);
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('No generator for testProperty');
-
         $registry->generate($property, $options);
-    });
+    })->throws(RuntimeException::class, 'No generator for testProperty');
 });

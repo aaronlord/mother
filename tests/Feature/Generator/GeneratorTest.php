@@ -27,7 +27,7 @@ describe('generate', function () {
             }
         }
 
-        /** @var GeneratorInterface<ConstructedDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(ConstructedDataStub::class, [], new Options());
@@ -43,7 +43,7 @@ describe('generate', function () {
             public string $value;
         }
 
-        /** @var GeneratorInterface<PropertyDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(PropertyDataStub::class, [], new Options());
@@ -70,7 +70,7 @@ describe('generate', function () {
             public OverrideBDataStub $nested;
         }
 
-        /** @var GeneratorInterface<OverrideADataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(
@@ -102,7 +102,7 @@ describe('generate', function () {
             }
         }
 
-        /** @var GeneratorInterface<OverrideDefaultDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(
@@ -124,7 +124,7 @@ describe('generate', function () {
             public ?string $value;
         }
 
-        /** @var GeneratorInterface<SkipNullableDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(
@@ -144,7 +144,7 @@ describe('generate', function () {
             public ?string $value;
         }
 
-        /** @var GeneratorInterface<PopulateNullableDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(
@@ -166,7 +166,7 @@ describe('generate', function () {
             public ?string $valueB = 'null default';
         }
 
-        /** @var GeneratorInterface<RespectDefaultDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(
@@ -191,7 +191,7 @@ describe('generate', function () {
             public ?string $valueB = 'null default';
         }
 
-        /** @var GeneratorInterface<RespectDefaultWithNullsDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $result = $sut->generate(
@@ -219,7 +219,7 @@ describe('generate', function () {
             }
         }
 
-        /** @var GeneratorInterface<DepthDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $options = new Options(
@@ -246,7 +246,7 @@ describe('generate', function () {
             public string $value;
         }
 
-        /** @var GeneratorInterface<CallableOverrideDataStub> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $person = $sut->generate(
@@ -263,7 +263,7 @@ describe('generate', function () {
     });
 
     it('uses MotherUsing attribute generator over registry', function () {
-        /** @var GeneratorInterface<object> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         class StringGenerator implements ValueGeneratorInterface
@@ -293,7 +293,7 @@ describe('generate', function () {
     });
 
     it('recursively generates class overrides', function () {
-        /** @var GeneratorInterface<PersonData> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         $person = $sut->generate(
@@ -313,7 +313,7 @@ describe('generate', function () {
     });
 
     it('skips assigning non-nullable properties when value is null and populateNulls is false', function () {
-        /** @var GeneratorInterface<object> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         class NullReturningGenerator implements ValueGeneratorInterface
@@ -353,7 +353,7 @@ describe('generate', function () {
     });
 
     it('ignores the supports result when using MotherUsing attribute', function () {
-        /** @var GeneratorInterface<object> $sut */
+        /** @var GeneratorInterface $sut */
         $sut = Container::make()->get(Generator::class);
 
         class UnsupportedGenerator implements ValueGeneratorInterface
