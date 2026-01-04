@@ -7,6 +7,7 @@ namespace Tests\Feature\Generator;
 use Error;
 use Lord\Mother\Attributes\MotherUsing;
 use Lord\Mother\Contracts\GeneratorInterface;
+use Lord\Mother\Contracts\ObjectGeneratorInterface;
 use Lord\Mother\Contracts\ValueGeneratorInterface;
 use Lord\Mother\Generator\Generator;
 use Lord\Mother\Reflection\PropertyDefinition;
@@ -290,6 +291,40 @@ describe('generate', function () {
         assert($result instanceof AttributeOverrideStub);
 
         expect($result->value)->toBe('string');
+    });
+
+    it('uses MotherUsing attribute generator on the class over registry', function () {
+        /** @var GeneratorInterface $sut */
+        $sut = Container::make()->get(Generator::class);
+
+        class ClassAttributeGenerator implements ObjectGeneratorInterface
+        {
+            public function supports(PropertyDefinition $property, Options $options): bool
+            {
+                return true;
+            }
+
+            public function generate(PropertyDefinition $property, Options $options): ?object
+            {
+                $stub = new ClassAttributeOverrideStub();
+
+                $stub->value = 'class string';
+
+                return $stub;
+            }
+        }
+
+        #[MotherUsing(new ClassAttributeGenerator())]
+        class ClassAttributeOverrideStub
+        {
+            public string $value;
+        }
+
+        $result = $sut->generate(ClassAttributeOverrideStub::class, [], new Options());
+
+        assert($result instanceof ClassAttributeOverrideStub);
+
+        expect($result->value)->toBe('class string');
     });
 
     it('recursively generates class overrides', function () {

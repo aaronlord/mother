@@ -27,7 +27,8 @@ $person = Mother::make(PersonData::class, [
     'address.city' => 'New York',
 ]);
 
-// p.s. Take a look at PersonData to see how names are generated.
+// p.s. Take a look at PersonData, and the other classes used in it, to see
+// examples of the MotherUsing attribute, nested DTOs, Enums, Value Objects, and more.
 
 dump($person);
 
