@@ -1,25 +1,23 @@
 # Mother
 
-Mother is a small PHP library for generating objects populated with fake or
-placeholder data.
+Mother is an Object Mother for PHP, providing nested object generation with minimal
+configuration, attributes and extendable generators.
 
 It is primarily intended for testing, but can also be used during early development
 to return realistic data to the frontend before features are fully implemented.
 
-The design is inspired by the Object Mother pattern, with a focus on:
-
-- type-aware generation
-- sensible defaults
-- deep object graphs
-- minimal configuration
-
 ### Installation
+
+Installation via Composer - typically as a dev dependency, but can also be used in
+production for feature flagged prototyping if desired.
 
 ```sh
 composer require lord/mother --dev
 ```
 
 ### Basic usage
+
+Objects can be generated a couple of ways:
 
 ```php
 <?php
@@ -35,7 +33,6 @@ $user = Mother::make(UserData::class, [
     'address.city' => 'London',
 ]);
 
-
 # Generate multiple instances with the builder:
 $users = Mother::for(UserData::class)
     ->with([
@@ -45,20 +42,105 @@ $users = Mother::for(UserData::class)
     ->make(10);
 ```
 
-See the [example dir](example) for a more detailed demonstration of usage.
+> [!TIP]
+> See the [example dir](example) for a more detailed demonstration of usage.
 
-### Custom generators
+#### Example test
 
-You can register your own value generators, and let them decide which values
-they support.
+Mother makes Unit testing easier to write and maintain by simplifying the creation
+of test data.
 
 ```php
 <?php
 
-Mother::register(new CustomStringGenerator());
+it('crates a user', function () {
+    $userRepoMock = mock(
+        UserRepositoryInterface::class,
+        static fn ($mock) => $mock
+            ->shouldReceive('create')
+            ->once()
+            ->with('hire@aaron.codes', 'secret')
+            ->andReturnUsing(static function (string $email) {
+                // Use Mother to generate a UserData instance with the given email:
+                return Mother::make(UserData::class, [
+                    'email' => $email,
+                ]);
+            }
+    );
+
+    $sut = new CreateUserCommand($userRepoMock);
+
+    $result = $sut->execute(
+        email: 'hire@aaron.codes',
+        password: 'secret',
+    );
+
+    expect($result)->toBeInstanceOf(UserData::class);
+    expect($result->email)->toBe('hire@aaron.codes');
+});
 ```
 
-Or directly apply them at a property or parameter level using attributes:
+#### Example mock data
+
+Mother can also be used to generate mock data for use during development, such as
+in repositories or services to return semi-realistic data before features are fully implemented.
+
+```php
+<?php
+
+use Lord\Mother\Mother;
+
+class UserRepository
+{
+    public function findUserByEmail(string $email): UserData
+    {
+        return Mother::make(UserData::class, [
+            'email' => $email,
+        ]);
+    }
+}
+```
+
+### Advanced Usage
+
+#### Value generators
+
+Creating a custom value generator is simple - just implement the
+`Lord\Mother\Contracts\ValueGeneratorInterface`.
+
+For example, here is a generator that creates UUID strings:
+
+```php
+<?php
+
+use Lord\Mother\Contracts\ValueGeneratorInterface;
+use Lord\Mother\Reflection\PropertyDefinition;
+use Lord\Mother\Support\Options;
+
+class UuidGenerator implements ValueGeneratorInterface
+{
+    public function supports(PropertyDefinition $property, Options $options): bool
+    {
+        return $property->type === 'string' && $property->name === 'uuid';
+    }
+
+    public function generate(PropertyDefinition $property, Options $options): mixed
+    {
+        return \Ramsey\Uuid\Uuid::uuid4()->toString();
+    }
+}
+```
+
+If you register this generator with Mother, as per the `supports` method, it will
+be used whenever a property named `uuid` of type `string` is encountered:
+
+```php
+<?php
+
+Mother::register(new UuidGenerator());
+```
+
+Alternatively, you can apply a generator to a specific property using the attribute:
 
 ```php
 <?php
@@ -66,25 +148,61 @@ Or directly apply them at a property or parameter level using attributes:
 use Lord\Mother\Attributes\MotherUsing;
 
 class ExampleData {
-    #[MotherUsing(new StringGenerator())]
-    public string $value;
+    #[MotherUsing(new UuidGenerator())]
+    public string $id;
 }
 ```
 
-Or apply a generator to an entire class:
+> [!NOTE]
+> The `supports` method is not called when using the attribute
+
+#### Object generators
+
+Another approach is to create an object generator, and apply it to a class using the
+`MotherUsing` attribute.
+
+The contract for an object generator is very similar to a value generator, it
+implements `Lord\Mother\Contracts\ObjectGeneratorInterface` - where the difference
+is that the `generate` method returns `?object` instead of `mixed`.
+
+```php
+<?php
+
+use Lord\Mother\Contracts\ValueGeneratorInterface;
+use Lord\Mother\Reflection\PropertyDefinition;
+use Lord\Mother\Support\Options;
+
+class UuidGenerator implements ValueGeneratorInterface
+{
+    public function supports(PropertyDefinition $property, Options $options): bool
+    {
+        return $property->name === '__class__' && $property->type === UuidValue::class;
+    }
+
+    public function generate(PropertyDefinition $property, Options $options): ?object
+    {
+        return new UuidValue(
+            value: \Ramsey\Uuid\Uuid::uuid4()->toString(),
+        );
+    }
+}
+```
+
 
 ```php
 <?php
 
 use Lord\Mother\Attributes\MotherUsing;
 
-#[MotherUsing(new ExampleGenerator())]
-class ExampleData {
-    public string $value;
+#[MotherUsing(new UuidGenerator())]
+class UuidValue {
+    public function __construct(
+        public string $value,
+    ) {}
 }
 ```
 
-### Options
+#### Options
 
 Generation behaviour can be customised:
 
@@ -112,7 +230,7 @@ Mother::make(
 );
 ```
 
-### Dependency injection
+#### Dependency injection
 
 If you want to change how Mother works, you can provide your own container and
 with your own classes registered. See `src/Contracts` for the interfaces that can be
@@ -124,7 +242,7 @@ implemented.
 Mother::resolveContainerUsing(fn () => $container);
 ```
 
-## Testing
+### Testing
 
 A shell command `/bin/mother` is provided to aid with development. Here are some
 examples of how to use it:
