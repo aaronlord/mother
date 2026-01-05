@@ -1,6 +1,6 @@
 {
     "name": "lord/mother",
-    "description": "A package to populate objects with data",
+    "description": "An Object Mother for PHP, providing nested object generation with attributes and extendable generators.",
     "version": "v1.0.0",
     "keywords": [
         "mother",
