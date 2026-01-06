@@ -152,6 +152,7 @@ final class Generator implements GeneratorInterface
 
         if (
             is_string($property->type)
+            && ! $override instanceof $property->type
             && class_exists($property->type)
             && ! enum_exists($property->type)
         ) {

@@ -94,6 +94,37 @@ describe('generate', function () {
         expect($result->nested->valueD)->toBe(48);
     });
 
+    it('overrides nested objects and does not recreate them', function () {
+        class NestedDataStub
+        {
+            public string $value;
+        }
+
+        class ParentDataStub
+        {
+            public NestedDataStub $nested;
+        }
+
+        /** @var GeneratorInterface $sut */
+        $sut = Container::make()->get(Generator::class);
+
+        $nestedInstance = new NestedDataStub();
+        $nestedInstance->value = 'overridden';
+
+        $result = $sut->generate(
+            ParentDataStub::class,
+            [
+                'nested' => $nestedInstance,
+            ],
+            new Options(),
+        );
+
+        assert($result instanceof ParentDataStub);
+
+        expect($result->nested)->toBe($nestedInstance);
+        expect($result->nested->value)->toBe('overridden');
+    });
+
     it('applies overrides to default values', function () {
         class OverrideDefaultDataStub
         {
@@ -157,6 +188,28 @@ describe('generate', function () {
         assert($result instanceof PopulateNullableDataStub);
 
         expect($result->value)->toBeString();
+    });
+
+    it('does not populate nulls that are overridden with null', function () {
+        class OverrideWithNullDataStub
+        {
+            public ?string $value;
+        }
+
+        /** @var GeneratorInterface $sut */
+        $sut = Container::make()->get(Generator::class);
+
+        $result = $sut->generate(
+            OverrideWithNullDataStub::class,
+            [
+                'value' => null,
+            ],
+            new Options(populateNulls: true),
+        );
+
+        assert($result instanceof OverrideWithNullDataStub);
+
+        expect($result->value)->toBeNull();
     });
 
     it('respects default values', function () {
