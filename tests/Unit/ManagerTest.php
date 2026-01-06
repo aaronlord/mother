@@ -21,6 +21,12 @@ describe('make', function () {
         $builderMock = Mockery::mock(BuilderInterface::class);
 
         $builderMock
+            ->shouldReceive('with')
+            ->once()
+            ->with([])
+            ->andReturnSelf();
+
+        $builderMock
             ->shouldReceive('make')
             ->once()
             ->with(1)
@@ -55,7 +61,7 @@ describe('make', function () {
         $builderMock
             ->shouldReceive('with')
             ->once()
-            ->with('name', 'test')
+            ->with(['name' => 'test'])
             ->andReturnSelf();
 
         $builderMock
@@ -90,6 +96,12 @@ describe('make', function () {
         ];
 
         $builderMock = Mockery::mock(BuilderInterface::class);
+
+        $builderMock
+            ->shouldReceive('with')
+            ->once()
+            ->with([])
+            ->andReturnSelf();
 
         $builderMock
             ->shouldReceive('make')

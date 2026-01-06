@@ -33,9 +33,15 @@ class Builder implements BuilderInterface
     ) {
     }
 
-    public function with(int|string $property, mixed $value): static
+    public function with(array|int|string $property, mixed $value = null): static
     {
-        $this->overrides[$property] = $value;
+        if (is_array($property)) {
+            foreach ($property as $key => $value) {
+                $this->overrides[$key] = $value;
+            }
+        } else {
+            $this->overrides[$property] = $value;
+        }
 
         return $this;
     }

@@ -16,11 +16,6 @@ class Manager implements ManagerInterface
     ) {
     }
 
-    /**
-     * @template T of object
-     * @param class-string<T> $class
-     * @return T
-     */
     public function make(
         string $class,
         array $overrides = [],
@@ -30,13 +25,10 @@ class Manager implements ManagerInterface
             $options = Options::from($options);
         }
 
-        $builder = $this->builderFactory->make($class, $options);
-
-        foreach ($overrides as $prop => $value) {
-            $builder = $builder->with($prop, $value);
-        }
-
-        return $builder->make(1);
+        return $this->builderFactory
+            ->make($class, $options)
+            ->with($overrides)
+            ->make(1);
     }
 
     public function for(string $class): BuilderInterface

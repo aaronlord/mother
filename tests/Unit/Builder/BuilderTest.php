@@ -65,6 +65,38 @@ describe('with', function () {
         ],
     ]);
 
+    it('sets multiple values from an array', function () {
+        $generatorMock = Mockery::mock(GeneratorInterface::class);
+
+        $generatorMock
+            ->shouldReceive('generate')
+            ->once()
+            ->andReturnUsing(static fn (string $class, array $overrides) => (object) ['overrides' => $overrides]);
+
+        $overrideExpanderMock = Mockery::mock(OverrideExpanderInterface::class);
+
+        $overrideExpanderMock
+            ->shouldReceive('expand')
+            ->once()
+            ->andReturnArg(0);
+
+        $optionMock = new Options();
+
+        $builder = new Builder(PersonData::class, $generatorMock, $overrideExpanderMock, $optionMock);
+
+        $builder->with([
+            'firstProperty' => 'first value',
+            'secondProperty' => 'second value',
+        ]);
+
+        /** @var object{overrides: array<int|string, mixed>} $object */
+        $object = $builder->make();
+
+        expect($object->overrides)
+            ->toHaveKey('firstProperty', 'first value')
+            ->toHaveKey('secondProperty', 'second value');
+    });
+
     it('overwrites existing values', function () {
         $generatorMock = Mockery::mock(GeneratorInterface::class);
 

@@ -35,9 +35,7 @@ $user = Mother::make(UserData::class, [
 
 # Generate multiple instances with the builder:
 $users = Mother::for(UserData::class)
-    ->with([
-        'status' => 'active',
-    ])
+    ->with('status', 'active')
     ->populateNulls()
     ->make(10);
 ```
@@ -45,7 +43,7 @@ $users = Mother::for(UserData::class)
 > [!TIP]
 > See the [example dir](example) for a more detailed demonstration of usage.
 
-#### Example test
+#### Test example
 
 Mother makes Unit testing easier to write and maintain by simplifying the creation
 of test data.
@@ -80,7 +78,7 @@ it('crates a user', function () {
 });
 ```
 
-#### Example mock data
+#### Mocking data example
 
 Mother can also be used to generate mock data for use during development, such as
 in repositories or services to return semi-realistic data before features are fully implemented.

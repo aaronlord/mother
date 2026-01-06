@@ -10,9 +10,11 @@ namespace Lord\Mother\Contracts;
 interface BuilderInterface
 {
     /**
-     * Override a property with a given value. Nested properties are specified using dot notation (e.g. 'address.city').
+     * Override properties, or a property with the given values. Nested properties are specified using dot notation (e.g. 'address.city').
+     *
+     * @param array<int|string, mixed>|int|string $property
      */
-    public function with(string $property, mixed $value): static;
+    public function with(array|int|string $property, mixed $value = null): static;
 
     /**
      * Populate properties with null values instead of leaving them unset.
